@@ -26,18 +26,10 @@
 <meta property="og:site_name" content="yzcabe&#39;s Blog">
 <meta property="og:description" content="卷积神经网络基础概念 卷积神经网络(convolutional neural network，CNN)是一种前馈神经网络，由一个或多个卷积层和顶端的全连通层，同时也包括关联权重和池化层。卷积具有两种性质：平移不变性和局部性。 重新考虑全连接层(全连接层的公式考虑为\(y &#x3D; w^{T}X+b\))的概念，将输入和输出变形为矩阵，可以得到以下的公式： \[ [H]_{i,j} &#x3D; [U]">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/2024/11/03/2/imgs/2.%E4%BD%BF%E7%94%A8%E5%8D%B7%E7%A7%AF%E8%BF%9B%E8%A1%8C%E6%B3%9B%E5%8C%96/image-20241107111532799.png">
-<meta property="og:image" content="http://example.com/2024/11/03/2/imgs/2.%E4%BD%BF%E7%94%A8%E5%8D%B7%E7%A7%AF%E8%BF%9B%E8%A1%8C%E6%B3%9B%E5%8C%96/image-20241107112843015.png">
-<meta property="og:image" content="http://example.com/2024/11/03/2/imgs/2.%E4%BD%BF%E7%94%A8%E5%8D%B7%E7%A7%AF%E8%BF%9B%E8%A1%8C%E6%B3%9B%E5%8C%96/image-20241108140413936.png">
-<meta property="og:image" content="http://example.com/2024/11/03/2/imgs/2.%E4%BD%BF%E7%94%A8%E5%8D%B7%E7%A7%AF%E8%BF%9B%E8%A1%8C%E6%B3%9B%E5%8C%96/image-20241108142335406.png">
-<meta property="og:image" content="http://example.com/2024/11/03/2/imgs/2.%E4%BD%BF%E7%94%A8%E5%8D%B7%E7%A7%AF%E8%BF%9B%E8%A1%8C%E6%B3%9B%E5%8C%96/image-20241108155255475.png">
-<meta property="og:image" content="http://example.com/2024/11/03/2/imgs/2.%E4%BD%BF%E7%94%A8%E5%8D%B7%E7%A7%AF%E8%BF%9B%E8%A1%8C%E6%B3%9B%E5%8C%96/image-20241107105657295.png">
-<meta property="og:image" content="http://example.com/2024/11/03/2/imgs/2.%E4%BD%BF%E7%94%A8%E5%8D%B7%E7%A7%AF%E8%BF%9B%E8%A1%8C%E6%B3%9B%E5%8C%96/image-20241107105809574.png">
 <meta property="article:published_time" content="2024-11-03T07:34:47.590Z">
 <meta property="article:modified_time" content="2024-11-08T08:13:08.463Z">
 <meta property="article:author" content="yzcabe">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/2024/11/03/2/imgs/2.%E4%BD%BF%E7%94%A8%E5%8D%B7%E7%A7%AF%E8%BF%9B%E8%A1%8C%E6%B3%9B%E5%8C%96/image-20241107111532799.png">
   
   
   
@@ -304,42 +296,64 @@ w^{T}X+b\)</span>)的概念，将输入和输出变形为矩阵，可以得到�
 \sum_{l}^{}}[W] _{i,j,k,l}\times [X]_{k,l}
 \]</span> 其中公式解释如下：</p>
 <ul>
-<li><span class="math inline">\([H]_{i,j}\)</span>：表示隐藏层在位<span class="math inline">\((i,j)\)</span>的值。</li>
+<li><span class="math inline">\([H]_{i,j}\)</span>：表示隐藏层在位<span
+class="math inline">\((i,j)\)</span>的值。</li>
 <li><span class="math inline">\([U]_{i，j}\)</span>表示一个偏置项</li>
 <li><span class="math inline">\([W] _{i,j,k,l}\)</span>
-是一个四阶权重张量，表示输入像素<span class="math inline">\((k，l)\)</span>对隐藏层位置<span class="math inline">\((i,j)\)</span>的影响权重，<span class="math inline">\([W] _{i,j,k,l}\times
-[X]_{k,l}\)</span>表示像素<span class="math inline">\((K,L)\)</span>对隐藏层位置<span class="math inline">\((i,j)\)</span>的贡献。</li>
-<li><span class="math inline">\([X]_{k,l}\)</span>是输入图像在位置<span class="math inline">\((i,j)\)</span>的像素位置。</li>
+是一个四阶权重张量，表示输入像素<span
+class="math inline">\((k，l)\)</span>对隐藏层位置<span
+class="math inline">\((i,j)\)</span>的影响权重，<span
+class="math inline">\([W] _{i,j,k,l}\times
+[X]_{k,l}\)</span>表示像素<span
+class="math inline">\((K,L)\)</span>对隐藏层位置<span
+class="math inline">\((i,j)\)</span>的贡献。</li>
+<li><span class="math inline">\([X]_{k,l}\)</span>是输入图像在位置<span
+class="math inline">\((i,j)\)</span>的像素位置。</li>
 </ul>
 <p>进行一个假设用<span class="math inline">\([V]
 _{i,j,a,b}\)</span>替换<span class="math inline">\([W]
 _{i,j,k,l}\)</span>，并假设：<span class="math inline">\(k =
 i+a\)</span>， <span class="math inline">\(l = i+a\)</span>
-，我们通过改变下标，得到全新的权重(v是w的重新索引)<span class="math inline">\(v_{i,j,a,b} =
+，我们通过改变下标，得到全新的权重(v是w的重新索引)<span
+class="math inline">\(v_{i,j,a,b} =
 w_{i,j,i+a,j+b}\)</span>最终得到公式：</p>
 <p><span class="math display">\[
 [H]_{i,j} = [U]_{i,j}+ {\textstyle \sum_{a}^{}}  {\textstyle
 \sum_{b}^{}}[V] _{i,j,a,b}\times [X]_{x+a,j+b}
-\]</span> 这实际上是一个典型的卷积操作，其中<span class="math inline">\([V] _{i,j,a,b}\)</span>是卷积核，<span class="math inline">\([X]_{x+a,j+b}\)</span>是图像在卷积核覆盖的区域内的像素。这种表示方式在图像处理和神经网络中被广泛使用，因为它利用图像的局部空间关系，同时减少模型的参数量。</p>
+\]</span> 这实际上是一个典型的卷积操作，其中<span
+class="math inline">\([V] _{i,j,a,b}\)</span>是卷积核，<span
+class="math inline">\([X]_{x+a,j+b}\)</span>是图像在卷积核覆盖的区域内的像素。这种表示方式在图像处理和神经网络中被广泛使用，因为它利用图像的局部空间关系，同时减少模型的参数量。</p>
 <h2 id="卷积的性质">卷积的性质</h2>
 <h3 id="平移不变性">平移不变性</h3>
-<p>引用上述第一个原则：平移不变性。及意味着检测对象在输入<span class="math inline">\(X\)</span>中的平移，应仅仅导致隐藏向量<span class="math inline">\(H\)</span>的平移，也就是说<span class="math inline">\(v\)</span>不应该依赖于<span class="math inline">\(j\)</span>。因此，公式可以简化为 <span class="math display">\[
+<p>引用上述第一个原则：平移不变性。及意味着检测对象在输入<span
+class="math inline">\(X\)</span>中的平移，应仅仅导致隐藏向量<span
+class="math inline">\(H\)</span>的平移，也就是说<span
+class="math inline">\(v\)</span>不应该依赖于<span
+class="math inline">\(j\)</span>。因此，公式可以简化为 <span
+class="math display">\[
 [\mathbf{H}]_{i, j} = u + \sum_a\sum_b [\mathbf{V}]_{a, b}
 [\mathbf{X}]_{i+a, j+b}.
 \]</span></p>
 <h3 id="局部性">局部性</h3>
 <p>局部性，用来训练参数<span class="math inline">\([\mathbf{H}]_{i,
-j}\)</span>的相关信息，我们不应偏离到距<span class="math inline">\((i,j)\)</span>很远的地方。所以给出的解决方案是<strong><span class="math inline">\(|a|&gt; \Delta\)</span></strong>或者<span class="math inline">\(|b| &gt; \Delta\)</span>，设置<span class="math inline">\([\mathbf{V}]_{a, b} = 0\)</span>,及公式表示为：
+j}\)</span>的相关信息，我们不应偏离到距<span
+class="math inline">\((i,j)\)</span>很远的地方。所以给出的解决方案是<strong><span
+class="math inline">\(|a|&gt; \Delta\)</span></strong>或者<span
+class="math inline">\(|b| &gt; \Delta\)</span>，设置<span
+class="math inline">\([\mathbf{V}]_{a, b} = 0\)</span>,及公式表示为：
 <span class="math display">\[
 [\mathbf{H}]_{i, j} = u + \sum_{a = -\Delta}^{\Delta} \sum_{b =
 -\Delta}^{\Delta} [\mathbf{V}]_{a, b}  [\mathbf{X}]_{i+a, j+b}.
 \]</span></p>
 <h2 id="卷积的数学公式">卷积的数学公式</h2>
 <p>数学中，两个函数形如如下形式的(<span class="math inline">\(f, g:
-\mathbb{R}^d \to \mathbb{R}\)</span>)，定义为卷积： <span class="math display">\[
+\mathbb{R}^d \to \mathbb{R}\)</span>)，定义为卷积： <span
+class="math display">\[
 (f * g)(\mathbf{x}) = \int f(\mathbf{z}) g(\mathbf{x}-\mathbf{z})
 d\mathbf{z}.
-\]</span> 卷积是把一个函数”翻转“并位移x，测量<span class="math inline">\(f\)</span>和<span class="math inline">\(g\)</span>之间的重叠。党为离散对象时，积分则变为求和，可以得到如下定义，该一维公式多用于文本、语言、时间序列的模型中。
+\]</span> 卷积是把一个函数”翻转“并位移x，测量<span
+class="math inline">\(f\)</span>和<span
+class="math inline">\(g\)</span>之间的重叠。党为离散对象时，积分则变为求和，可以得到如下定义，该一维公式多用于文本、语言、时间序列的模型中。
 <span class="math display">\[
 (f * g)(i) = \sum_a f(a) g(i-a).
 \]</span> 以此类推，二维卷积的公式为： <span class="math display">\[
@@ -348,7 +362,9 @@ d\mathbf{z}.
 <h2 id="感受野的概念">感受野的概念</h2>
 <p>卷积神经网络中每一层输出的特征图上的像素点在原始图像上映射的区域大小，<strong>第一层</strong>卷积层的输出特征图像素的<strong>感受野大小等于卷积核的大小</strong>，其它卷积层的输出特征的感受野的大小和它之前所有层的卷积核的大小和步长都有关。</p>
 <figure>
-<img src="/2024/11/03/2/imgs/2.%E4%BD%BF%E7%94%A8%E5%8D%B7%E7%A7%AF%E8%BF%9B%E8%A1%8C%E6%B3%9B%E5%8C%96/image-20241107111532799.png" srcset="/img/loading.gif" lazyload alt="感受野图例">
+<img
+src="../imgs/2.%E4%BD%BF%E7%94%A8%E5%8D%B7%E7%A7%AF%E8%BF%9B%E8%A1%8C%E6%B3%9B%E5%8C%96/image-20241107111532799.png" srcset="/img/loading.gif" lazyload
+alt="感受野图例" />
 <figcaption aria-hidden="true">感受野图例</figcaption>
 </figure>
 <p>感受野的计算公式： <span class="math display">\[
@@ -356,9 +372,12 @@ r_{n} = r_{n-1}+(k_{n-1})\coprod_{i = 1}^{n-1}S_{i}
 \]</span> 其中<span class="math inline">\(n\ge 2\)</span></p>
 <p><span class="math inline">\(k:\)</span>kernel size</p>
 <p><span class="math inline">\(S_{n}:\)</span>Stride</p>
-<p><span class="math inline">\(r_{n}:\)</span>receptive-field，感受野，n表示层数</p>
+<p><span
+class="math inline">\(r_{n}:\)</span>receptive-field，感受野，n表示层数</p>
 <figure>
-<img src="/2024/11/03/2/imgs/2.%E4%BD%BF%E7%94%A8%E5%8D%B7%E7%A7%AF%E8%BF%9B%E8%A1%8C%E6%B3%9B%E5%8C%96/image-20241107112843015.png" srcset="/img/loading.gif" lazyload alt="感受野计算例子">
+<img
+src="../imgs/2.%E4%BD%BF%E7%94%A8%E5%8D%B7%E7%A7%AF%E8%BF%9B%E8%A1%8C%E6%B3%9B%E5%8C%96/image-20241107112843015.png" srcset="/img/loading.gif" lazyload
+alt="感受野计算例子" />
 <figcaption aria-hidden="true">感受野计算例子</figcaption>
 </figure>
 <p>计算过程：</p>
@@ -368,28 +387,42 @@ r_{n} = r_{n-1}+(k_{n-1})\coprod_{i = 1}^{n-1}S_{i}
 <p><span class="math inline">\(r_{3} = 19+(5-1)\times 4\times 2 =
 51\)</span></p>
 <h2 id="填充和步幅">填充和步幅</h2>
-<p>卷积的输出形状填充<span class="math inline">\((padding)\)</span>和步幅<span class="math inline">\((stride)\)</span>的影响。</p>
+<p>卷积的输出形状填充<span
+class="math inline">\((padding)\)</span>和步幅<span
+class="math inline">\((stride)\)</span>的影响。</p>
 <p><strong>填充</strong>，以下图为例在图像的边界填充元素：</p>
 <figure>
-<img src="/2024/11/03/2/imgs/2.%E4%BD%BF%E7%94%A8%E5%8D%B7%E7%A7%AF%E8%BF%9B%E8%A1%8C%E6%B3%9B%E5%8C%96/image-20241108140413936.png" srcset="/img/loading.gif" lazyload alt="在卷积周围填充0">
+<img
+src="../imgs/2.%E4%BD%BF%E7%94%A8%E5%8D%B7%E7%A7%AF%E8%BF%9B%E8%A1%8C%E6%B3%9B%E5%8C%96/image-20241108140413936.png" srcset="/img/loading.gif" lazyload
+alt="在卷积周围填充0" />
 <figcaption aria-hidden="true">在卷积周围填充0</figcaption>
 </figure>
-<p>如果我们添加<span class="math inline">\(p_{h}\)</span>行填充和<span class="math inline">\(p_{w}\)</span>列填充，则输出的形状为： <span class="math display">\[
+<p>如果我们添加<span class="math inline">\(p_{h}\)</span>行填充和<span
+class="math inline">\(p_{w}\)</span>列填充，则输出的形状为： <span
+class="math display">\[
 (n_h-k_h+p_h+1)\times(n_w-k_w+p_w+1)。
 \]</span>
 <strong>步幅</strong>，滑块滑动的距离被称为步幅，如下图为垂直步幅为3，水平步幅为2的二维互相关运算。</p>
 <figure>
-<img src="/2024/11/03/2/imgs/2.%E4%BD%BF%E7%94%A8%E5%8D%B7%E7%A7%AF%E8%BF%9B%E8%A1%8C%E6%B3%9B%E5%8C%96/image-20241108142335406.png" srcset="/img/loading.gif" lazyload alt="image-20241108142335406">
+<img
+src="../imgs/2.%E4%BD%BF%E7%94%A8%E5%8D%B7%E7%A7%AF%E8%BF%9B%E8%A1%8C%E6%B3%9B%E5%8C%96/image-20241108142335406.png" srcset="/img/loading.gif" lazyload
+alt="image-20241108142335406" />
 <figcaption aria-hidden="true">image-20241108142335406</figcaption>
 </figure>
-<p>如果<span class="math inline">\(p_{h}\)</span>行填充和<span class="math inline">\(p_{w}\)</span>列填充，水平步幅为<span class="math inline">\(s_{w}\)</span>、垂直步幅为<span class="math inline">\(s_{h}\)</span>则输出的形状为： <span class="math display">\[
+<p>如果<span class="math inline">\(p_{h}\)</span>行填充和<span
+class="math inline">\(p_{w}\)</span>列填充，水平步幅为<span
+class="math inline">\(s_{w}\)</span>、垂直步幅为<span
+class="math inline">\(s_{h}\)</span>则输出的形状为： <span
+class="math display">\[
 \lfloor(n_h-k_h+p_h+s_h)/s_h\rfloor \times
 \lfloor(n_w-k_w+p_w+s_w)/s_w\rfloor.
 \]</span></p>
 <h2 id="池化">池化</h2>
 <p>卷积对位置信息较为敏感，用池化减少位置信息对卷积层：</p>
 <figure>
-<img src="/2024/11/03/2/imgs/2.%E4%BD%BF%E7%94%A8%E5%8D%B7%E7%A7%AF%E8%BF%9B%E8%A1%8C%E6%B3%9B%E5%8C%96/image-20241108155255475.png" srcset="/img/loading.gif" lazyload alt="最大池化层样例">
+<img
+src="../imgs/2.%E4%BD%BF%E7%94%A8%E5%8D%B7%E7%A7%AF%E8%BF%9B%E8%A1%8C%E6%B3%9B%E5%8C%96/image-20241108155255475.png" srcset="/img/loading.gif" lazyload
+alt="最大池化层样例" />
 <figcaption aria-hidden="true">最大池化层样例</figcaption>
 </figure>
 <p>简单池化层基础实现</p>
@@ -397,12 +430,16 @@ r_{n} = r_{n-1}+(k_{n-1})\coprod_{i = 1}^{n-1}S_{i}
 <h2 id="卷积的代码理解">卷积的代码理解</h2>
 <p>一维卷积的运算：</p>
 <figure>
-<img src="/2024/11/03/2/imgs/2.%E4%BD%BF%E7%94%A8%E5%8D%B7%E7%A7%AF%E8%BF%9B%E8%A1%8C%E6%B3%9B%E5%8C%96/image-20241107105657295.png" srcset="/img/loading.gif" lazyload alt="单通道计算">
+<img
+src="../imgs/2.%E4%BD%BF%E7%94%A8%E5%8D%B7%E7%A7%AF%E8%BF%9B%E8%A1%8C%E6%B3%9B%E5%8C%96/image-20241107105657295.png" srcset="/img/loading.gif" lazyload
+alt="单通道计算" />
 <figcaption aria-hidden="true">单通道计算</figcaption>
 </figure>
 <p>多输入通道的计算：</p>
 <figure>
-<img src="/2024/11/03/2/imgs/2.%E4%BD%BF%E7%94%A8%E5%8D%B7%E7%A7%AF%E8%BF%9B%E8%A1%8C%E6%B3%9B%E5%8C%96/image-20241107105809574.png" srcset="/img/loading.gif" lazyload alt="两个输入通道的互相关计算">
+<img
+src="../imgs/2.%E4%BD%BF%E7%94%A8%E5%8D%B7%E7%A7%AF%E8%BF%9B%E8%A1%8C%E6%B3%9B%E5%8C%96/image-20241107105809574.png" srcset="/img/loading.gif" lazyload
+alt="两个输入通道的互相关计算" />
 <figcaption aria-hidden="true">两个输入通道的互相关计算</figcaption>
 </figure>
 <p>定义一个卷积层：</p>
