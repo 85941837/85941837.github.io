@@ -1,0 +1,931 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/Bird.png">
+  <link rel="icon" href="/img/Bird.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="yzcabe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="关键词：细粒度对齐、预训练语言模型、CTR 预测、推荐系统 论文地址：https:&#x2F;&#x2F;arxiv.org&#x2F;pdf&#x2F;2310.19453 代码链接：https:&#x2F;&#x2F;github.com&#x2F;justarter&#x2F;FLIP 发表会议：RecSys 24 摘要 ​ 文章中提到传统基于ID嵌入模型和预训练语言模型Pretrained Language Models, PLMs）。传统基于ID的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="yzcabe&#39;s Blog">
+<meta property="og:url" content="http://example.com/2025/03/01/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BBFLIP/index.html">
+<meta property="og:site_name" content="yzcabe&#39;s Blog">
+<meta property="og:description" content="关键词：细粒度对齐、预训练语言模型、CTR 预测、推荐系统 论文地址：https:&#x2F;&#x2F;arxiv.org&#x2F;pdf&#x2F;2310.19453 代码链接：https:&#x2F;&#x2F;github.com&#x2F;justarter&#x2F;FLIP 发表会议：RecSys 24 摘要 ​ 文章中提到传统基于ID嵌入模型和预训练语言模型Pretrained Language Models, PLMs）。传统基于ID的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2025/03/01/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BBFLIP/image-20250301135056896.png">
+<meta property="og:image" content="http://example.com/2025/03/01/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BBFLIP/image-20250301164357139.png">
+<meta property="og:image" content="http://example.com/2025/03/01/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BBFLIP/image-20250301165814179.png">
+<meta property="og:image" content="http://example.com/2025/03/01/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BBFLIP/image-20250301171104199.png">
+<meta property="og:image" content="http://example.com/2025/03/01/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BBFLIP/image-20250301172947758.png">
+<meta property="og:image" content="http://example.com/2025/03/01/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BBFLIP/image-20250302135150094.png">
+<meta property="og:image" content="http://example.com/2025/03/01/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BBFLIP/image-20250302135200663.png">
+<meta property="og:image" content="http://example.com/2025/03/01/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BBFLIP/image-20250301171104199.png">
+<meta property="og:image" content="http://example.com/2025/03/01/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BBFLIP/image-20250302135643707.png">
+<meta property="og:image" content="http://example.com/2025/03/01/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BBFLIP/image-20250302141857004.png">
+<meta property="og:image" content="http://example.com/2025/03/01/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BBFLIP/image-20250302141922497.png">
+<meta property="og:image" content="http://example.com/2025/03/01/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BBFLIP/image-20250302142036019.png">
+<meta property="og:image" content="http://example.com/2025/03/01/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BBFLIP/image-20250302142646125.png">
+<meta property="og:image" content="http://example.com/2025/03/01/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BBFLIP/image-20250302143652351.png">
+<meta property="og:image" content="http://example.com/2025/03/01/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BBFLIP/image-20250302144102595.png">
+<meta property="og:image" content="http://example.com/2025/03/01/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BBFLIP/image-20250302144650378.png">
+<meta property="og:image" content="http://example.com/2025/03/01/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BBFLIP/image-20250302144655816.png">
+<meta property="og:image" content="http://example.com/2025/03/01/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BBFLIP/image-20250302144708792.png">
+<meta property="og:image" content="http://example.com/2025/03/01/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BBFLIP/image-20250302145516653.png">
+<meta property="og:image" content="http://example.com/2025/03/01/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BBFLIP/image-20250302145839507.png">
+<meta property="og:image" content="http://example.com/2025/03/01/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BBFLIP/image-20250302150020707.png">
+<meta property="og:image" content="http://example.com/2025/03/01/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BBFLIP/image-20250302150043721.png">
+<meta property="og:image" content="http://example.com/2025/03/01/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BBFLIP/image-20250302150123211.png">
+<meta property="og:image" content="http://example.com/2025/03/01/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BBFLIP/image-20250302150150199.png">
+<meta property="og:image" content="http://example.com/2025/03/01/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BBFLIP/image-20250302150808092.png">
+<meta property="og:image" content="http://example.com/2025/03/01/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BBFLIP/image-20250302151304378.png">
+<meta property="article:published_time" content="2025-02-28T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-03-02T07:49:34.113Z">
+<meta property="article:author" content="yzcabe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2025/03/01/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BBFLIP/image-20250301135056896.png">
+  
+  
+  
+  <title>yzcabe&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>yzcabe</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text=""></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-03-01 00:00" pubdate>
+          2025年3月1日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          18 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header"></h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p><strong>关键词：</strong>细粒度对齐、预训练语言模型、CTR
+预测、推荐系统</p>
+<p><strong>论文地址：</strong>https://arxiv.org/pdf/2310.19453</p>
+<p><strong>代码链接：</strong>https://github.com/justarter/FLIP</p>
+<p><strong>发表会议：</strong>RecSys 24</p>
+<h1 id="摘要">摘要</h1>
+<p>​
+文章中提到传统<strong>基于ID嵌入模型</strong>和<strong>预训练语言模型Pretrained
+Language Models,
+PLMs）</strong>。传统基于ID的点击率模型以one-hot特征编码作为输入，通过特征交互建模获取协同信号；预训练语言模型通过hard
+prompt模版获得文本情态句子作为输入，利用PLMs提取语义知识，但plm在捕获领域协作信号和区分具有细微文本差异的特征方面面临挑战。文章利用这两种范式的优点，设计一种基于ID和预训练语言模型(FLIP)，该方法将以上两种方法融合，让未被mask的模态数据帮助重构被mask的模态的数据，同时，文章还提出通过自适应组合基于id的模型和PLM的输出，对两者进行联合微调。</p>
+<h1 id="引言">引言</h1>
+<p>​
+传统基于ID的CTR预测采用one-hot编码将输入数据转换为ID特征，这种方式丢失文本特征中包含的语义信息，无法捕获特征中语义的相关性，此外基于ID的模型依赖用户的交互。PLM擅长理解文本特征和上线文的含义，利用其知识推理能力在稀疏交互性下也具有稳定性能。但PLM也具有局限性，它难以理解领域协作信号，因为它们的输入数据表述为文本句子，。此外，PLM无法识别不同特征描述之间的细微差距(如就电影而言，“房间”和“房间”是两个相似的电影)</p>
+<figure>
+<img src="image-20250301135056896.png" srcset="/img/loading.gif" lazyload alt="image-20250301135056896">
+<figcaption aria-hidden="true">image-20250301135056896</figcaption>
+</figure>
+<p>​
+(三个跨模态预训练任务，a通过对比学习提供粗粒度的实例对齐，bc通过联合掩模态实现细粒度特征级对齐)</p>
+<p>​</p>
+<h1 id="正文">正文</h1>
+<h2 id="flip概述">FLIP概述</h2>
+<p>​
+FLIP包含三个阶段：<strong>模态转换、模态对齐训练和自适应微调</strong>。首先，FLIP将原始数据从表格形式转换为文本形式。然后，在模态对齐预训练中，采用联合屏蔽语言/表格建模任务来学习细粒度的模态对齐。最后，提出了一种简单而有效的自适应微调策略，以进一步提高CTR预测的性能。</p>
+<figure>
+<img src="image-20250301164357139.png" srcset="/img/loading.gif" lazyload alt="image-20250301164357139">
+<figcaption aria-hidden="true">image-20250301164357139</figcaption>
+</figure>
+<h2 id="模态转化">模态转化</h2>
+<p>​
+标准plm采用单词序列作为输入[13,57]。模态转换的目的是通过硬提示模板将表格数据<span class="math inline">\(x^{tab}_{i}\)</span>转换为文本数据<span class="math inline">\(x^{text}_{i}\)</span></p>
+<figure>
+<img src="image-20250301165814179.png" srcset="/img/loading.gif" lazyload alt="image-20250301165814179">
+<figcaption aria-hidden="true">image-20250301165814179</figcaption>
+</figure>
+<p>​ 其中<span class="math inline">\(m_{f}\)</span>表示第<span class="math inline">\(f\)</span>个字段的名称(例如：性别)，<span class="math inline">\(v_{i,f}\)</span>表示输入的变量<span class="math inline">\(x^{tab}_{i}\)</span>为𝑓-th字段的特征值。(例如：女)，⊕表示连接操作符。2给出了一个说明性示例。</p>
+<h2 id="模态对齐预训练">模态对齐预训练</h2>
+<p>​ 模态对齐训练包括mask数据生产、数据编码、mask语言模型建模、mask
+tabular模型建模（这里的tabular模型就是传统基于ID的协同模型）和实例级对比学习</p>
+<p>​ 如图2（阶段2）所示，在从相同的原始输入中获得成对的文本文本数据(<span class="math inline">\(x^{text}_{i}\)</span>，<span class="math inline">\(x^{tab}_{i}\)</span>)后，我们首先执行字段级数据屏蔽以获得输入对的损坏版本，（<span class="math inline">\(\hat{x}^{text}_{i}\)</span>，<span class="math inline">\(\hat{x}^{tab}_{i}\)</span>）。然后，利用PLM -
+PLM和基于ID的模型- ID对输入对进行编码，得到密度表示(<span class="math inline">\(w_{i}\)</span>，<span class="math inline">\(\hat{w}_{i}\)</span>)和(<span class="math inline">\(v_{i}\)</span>，<span class="math inline">\(\hat{v}_{i}\)</span>)分别用于文本模式和表格模式。接下来，我们应用三个不同的预训练目标来实现plm和基于id的模型之间的特征级和实例级对齐：</p>
+<figure>
+<img src="image-20250301171104199.png" srcset="/img/loading.gif" lazyload alt="image-20250301171104199">
+<figcaption aria-hidden="true">image-20250301171104199</figcaption>
+</figure>
+<h2 id="字段级数据屏蔽">字段级数据屏蔽</h2>
+<p>​
+举例：假设来自职业字段的句子标记为[“occupation”，“is”，“college”，“student”]，段级屏蔽的结果应该是["
+occupation ", " is ", [MASK],
+[MASK]]。但令牌级屏蔽的结果可能是[[MASK]，“is”，“college”，“student”]或[“occupation”，“is”，“college”，[MASK]]。</p>
+<p>​ 对于table数据，采用一定比例的<span class="math inline">\(r_{tab}\)</span>字段，用一个额外的<MASK>特征替换对应的特征，<MASK>特性不是特定于字段的，而是由所有特性字段共享，屏蔽字段的索引集表示为<span class="math inline">\(I^{tab}\)</span>。</MASK></MASK></p>
+<p>​ 字段级屏蔽之后，得到屏蔽样本(<span class="math inline">\(\hat{x}^{text}_{i}\)</span>，<span class="math inline">\(\hat{x}^{tab}_{i}\)</span>)，文本模态数据的mask和table模态数据的mask比例用两个超参数控制。</p>
+<h2 id="数据编码">数据编码</h2>
+<p>​ PLM模型（ <span class="math inline">\(h_{PLM}\)</span>
+）和ID-based模型（ <span class="math inline">\(h_{ID}\)</span>
+）分别对文本模态和table模态的数据进行编码。</p>
+<figure>
+<img src="image-20250301172947758.png" srcset="/img/loading.gif" lazyload alt="image-20250301172947758">
+<figcaption aria-hidden="true">image-20250301172947758</figcaption>
+</figure>
+<p>​ <span class="math inline">\(l\)</span>为令牌个数<span class="math inline">\(w^{text}_{i}\)</span>和并且<span class="math inline">\(D_{text}\)</span>为PLM的隐藏大小。<span class="math inline">\(w_{i，1}\)</span>是表示整个文本输入的[CLS]令牌向量。</p>
+<h2 id="掩码数据建模mlm">掩码数据建模(MLM)</h2>
+<p>​ 将文本-表示对<span class="math inline">\((\hat{w}_{i},v_{i})\)</span>作为输入，屏蔽令牌的索引集表示为<span class="math inline">\(I^{text}\)</span>,将mask的token对应的向量和table模态的输出
+<span class="math inline">\(v_{i}\)</span>
+concat起来过一个预测层，预测层是个两层的MLP。优化loss是交叉熵。</p>
+<figure>
+<img src="image-20250302135150094.png" srcset="/img/loading.gif" lazyload alt="image-20250302135150094">
+<figcaption aria-hidden="true">image-20250302135150094</figcaption>
+</figure>
+<figure>
+<img src="image-20250302135200663.png" srcset="/img/loading.gif" lazyload alt="image-20250302135200663">
+<figcaption aria-hidden="true">image-20250302135200663</figcaption>
+</figure>
+<figure>
+<img src="image-20250301171104199.png" srcset="/img/loading.gif" lazyload alt="image-20250301171104199">
+<figcaption aria-hidden="true">image-20250301171104199</figcaption>
+</figure>
+<h2 id="mask-tabular模型建模">mask tabular模型建模</h2>
+<p>​ 将文本-表对(<span class="math inline">\(w_i\)</span>，<span class="math inline">\(\hat{v}_{i}\)</span>)作为输入，目标是利用文本模态的输出和mask的table数据重构mask掉的数据，首先：</p>
+<figure>
+<img src="image-20250302135643707.png" srcset="/img/loading.gif" lazyload alt="image-20250302135643707">
+<figcaption aria-hidden="true">image-20250302135643707</figcaption>
+</figure>
+<p>​ 其中<span class="math inline">\(Q ∈ R^{D_{tab}×D_{text}}\)</span>
+是可训练的注意力矩阵，并且<span class="math inline">\(\sqrt{D_{text}}\)</span>是比例因子。</p>
+<p>​ 对于索引为<span class="math inline">\(f∈I^{tab}\)</span>的每个屏蔽特征，使用MLP+softmax计算在特征空间上的分布，所有掩蔽特征都采用交叉熵损失。</p>
+<figure>
+<img src="image-20250302141857004.png" srcset="/img/loading.gif" lazyload alt="image-20250302141857004">
+<figcaption aria-hidden="true">image-20250302141857004</figcaption>
+</figure>
+<figure>
+<img src="image-20250302141922497.png" srcset="/img/loading.gif" lazyload alt="image-20250302141922497">
+<figcaption aria-hidden="true">image-20250302141922497</figcaption>
+</figure>
+<p>​
+论文中提到，上述loss需要在全部特征空间上计算softmax，效率比较低，所以采用了噪声对比估计NCE。</p>
+<figure>
+<img src="image-20250302142036019.png" srcset="/img/loading.gif" lazyload alt="image-20250302142036019">
+<figcaption aria-hidden="true">image-20250302142036019</figcaption>
+</figure>
+<h2 id="实例级对比学习icl">实例级对比学习（ICL）</h2>
+<p>​
+MLM和MTM是从特征层面对两个模态进行对齐，ICL的是显式的从样本层面对齐两个模态。方法采用的是对比学习，模板是同一个样本的文本和table两个模态的表征尽可能接近，不同样本的两个模态表征尽可能远离。</p>
+<p>​ 使用[CLS]令牌向量<span class="math inline">\(w_{i，1}\)</span>来表示文本输入<span class="math inline">\(x^{text}_{i}\)</span>，为保持维度的一致性，使用<span class="math inline">\(w_{i,1}\)</span>和表格表示<span class="math inline">\(v_{i}\)</span>投影到𝑑-dimensional向量，即：<span class="math inline">\(z^{text}\)</span>和<span class="math inline">\(z^{tab}_{i}\)</span>，损失函数为：</p>
+<figure>
+<img src="image-20250302142646125.png" srcset="/img/loading.gif" lazyload alt="image-20250302142646125">
+<figcaption aria-hidden="true">image-20250302142646125</figcaption>
+</figure>
+<p>​ 其中B为批量大小，<span class="math inline">\(\mathscr{C}\)</span>为温度超参数，相似函数sim（·）用点积表示，最后总损失表示为：</p>
+<figure>
+<img src="image-20250302143652351.png" srcset="/img/loading.gif" lazyload alt="image-20250302143652351">
+<figcaption aria-hidden="true">image-20250302143652351</figcaption>
+</figure>
+<h2 id="自适应微调">自适应微调</h2>
+<p>​
+上述预训练之后，PLM和ID模型学到了细粒度多模态表征，这个阶段主要是在下游ctr任务上进行两个模态的联合微调，以获得更好的效果。</p>
+<p>​
+FLIP对ID模型（tabular模态）和PLM模型的输出分别一个随机初始化的线性层，以使两个模型输出各自的概率估计<span class="math inline">\(\hat{y}^{id}_{i}\)</span>和<span class="math inline">\(\hat{y}^{PLM}_{i}\)</span>FLIP模型最终的ctr预估概率是两个概率的加权和。</p>
+<figure>
+<img src="image-20250302144102595.png" srcset="/img/loading.gif" lazyload alt="image-20250302144102595">
+<figcaption aria-hidden="true">image-20250302144102595</figcaption>
+</figure>
+<figure>
+<img src="image-20250302144650378.png" srcset="/img/loading.gif" lazyload alt="image-20250302144650378">
+<figcaption aria-hidden="true">image-20250302144650378</figcaption>
+</figure>
+<figure>
+<img src="image-20250302144655816.png" srcset="/img/loading.gif" lazyload alt="image-20250302144655816">
+<figcaption aria-hidden="true">image-20250302144655816</figcaption>
+</figure>
+<p>​ 损失函数为：</p>
+<figure>
+<img src="image-20250302144708792.png" srcset="/img/loading.gif" lazyload alt="image-20250302144708792">
+<figcaption aria-hidden="true">image-20250302144708792</figcaption>
+</figure>
+<h2 id="实验">实验</h2>
+<p>​ 数据集：MovieLens-1M、BookCrossing、GoodReads</p>
+<figure>
+<img src="image-20250302145516653.png" srcset="/img/loading.gif" lazyload alt="image-20250302145516653">
+<figcaption aria-hidden="true">image-20250302145516653</figcaption>
+</figure>
+<p>​ 评价指标为：AUC （ROC曲线下面积）和Logloss</p>
+<p>​
+基线算法：1)基于ID的模型：AFM[79]、PNN[55]、Wide&amp;Deep[9]、DCN[73]、DeepFM[20]、xDeepFM[36]、AFN[10]、AutoInt[65]和DCNv2[74]；(2)基于PLM的模型：CTRL
+- bert[50]、P5[18]和PTab[43]；(3)基于ID模型和PLM相结合的ID
+PLM模型：CTRL[35]、MoRec[81]。</p>
+<p>​
+实现细节：文本模态和table模态的mask比例均为15%，PLM模型使用TinyBERT，ID模型使用DCNv2。</p>
+<figure>
+<img src="image-20250302145839507.png" srcset="/img/loading.gif" lazyload alt="image-20250302145839507">
+<figcaption aria-hidden="true">image-20250302145839507</figcaption>
+</figure>
+<p>​ 不同plm的兼容性。基于id的模型固定为DCNv2。</p>
+<figure>
+<img src="image-20250302150020707.png" srcset="/img/loading.gif" lazyload alt="image-20250302150020707">
+<figcaption aria-hidden="true">image-20250302150020707</figcaption>
+</figure>
+<p>消融实验:</p>
+<figure>
+<img src="image-20250302150043721.png" srcset="/img/loading.gif" lazyload alt="image-20250302150043721">
+<figcaption aria-hidden="true">image-20250302150043721</figcaption>
+</figure>
+<p>mask率和对比学习温度系数的实验：</p>
+<figure>
+<img src="image-20250302150123211.png" srcset="/img/loading.gif" lazyload alt="image-20250302150123211">
+<figcaption aria-hidden="true">image-20250302150123211</figcaption>
+</figure>
+<figure>
+<img src="image-20250302150150199.png" srcset="/img/loading.gif" lazyload alt="image-20250302150150199">
+<figcaption aria-hidden="true">image-20250302150150199</figcaption>
+</figure>
+<p>​ 级的对齐。</p>
+<p>​ 使用基于PLM和id的模型将它们编码成归一化样本表示<span class="math inline">\(\{z^{text}_{i,(f)},z^{tab}_{i,(f)}\}^{F}_{f=1}\)</span>计算每个跨模态表示对的相互相似性分数（通过点积测量），并将热图可视化.</p>
+<figure>
+<img src="image-20250302150808092.png" srcset="/img/loading.gif" lazyload alt="image-20250302150808092">
+<figcaption aria-hidden="true">image-20250302150808092</figcaption>
+</figure>
+<p>不同模型变体在MovieLens-1M上学习的特征ID嵌入的可视化。使用奇异值分解将特征嵌入矩阵投影到二维数据中:</p>
+<figure>
+<img src="image-20250302151304378.png" srcset="/img/loading.gif" lazyload alt="image-20250302151304378">
+<figcaption aria-hidden="true">image-20250302151304378</figcaption>
+</figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F-%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B/" class="category-chain-item">推荐系统 大语言模型</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div></div>
+      <div>http://example.com/2025/03/01/论文精读FLIP/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>yzcabe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年3月1日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/12/05/%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95/" title="优化算法">
+                        <span class="hidden-mobile">优化算法</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+    <!-- 备案信息 ICP for China -->
+    <div class="beian">
+  <span>
+    <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+      京ICP证123456号
+    </a>
+  </span>
+  
+    
+      <span>
+        <a
+          href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=12345678"
+          rel="nofollow noopener"
+          class="beian-police"
+          target="_blank"
+        >
+          
+            <span style="visibility: hidden; width: 0">|</span>
+            <img src="/img/police_beian.png" srcset="/img/loading.gif" lazyload alt="police-icon"/>
+          
+          <span>京公网安备12345678号</span>
+        </a>
+      </span>
+    
+  
+</div>
+
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
