@@ -4,6 +4,25 @@
   
   
   <entry>
+    <title>LaTeX-OCR安装教程</title>
+    <link href="/2025/03/04/latexocr%E5%AE%89%E8%A3%85/"/>
+    <url>/2025/03/04/latexocr%E5%AE%89%E8%A3%85/</url>
+    
+    <content type="html"><![CDATA[<h1 id="准备工作">准备工作</h1><h2 id="安装anaconda">安装Anaconda</h2><p>下载地址: https://www.anaconda.com/download/</p><p>安装过程较为简单，参考网站安装教程即可。</p><p>下载安装完成，右键以管理员身份运行:</p><figure><img src="image-20250304164139802.png" alt="image-20250304164139802"><figcaption aria-hidden="true">image-20250304164139802</figcaption></figure><h2 id="创建环境">创建环境</h2><p>在控制台输入<code>conda create -n latexocr python=3.7</code>,python版本建议大于3.7,本人安装3.9版本</p><figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs gams"><span class="hljs-comment">// 1. 创建一个名为latexocr的环境</span><br><span class="hljs-symbol">$</span> conda create -n latexocr python=<span class="hljs-number">3.9</span><br></code></pre></td></tr></table></figure><h3 id="激活环境">激活环境</h3><figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs 1c"><span class="hljs-comment">// 2. 进入名为latexocr的环境</span><br>conda activate latexocr<br></code></pre></td></tr></table></figure><h3 id="安装pytorch环境">安装pytorch环境</h3><p>地址：https://pytorch.org/</p><p>安装CPU版本即可，复制运行代码<code>pip3 install torch torchvision torchaudio</code>，在控制台输入。</p><figure><img src="image-20250304164652585.png" alt="image-20250304164652585"><figcaption aria-hidden="true">image-20250304164652585</figcaption></figure><h3 id="安装rust程序">安装Rust程序</h3><p>官网链接：https://www.rust-lang.org/zh-CN/</p><p>根据自身配置进行下载。</p><figure><img src="image-20250304165309298.png" alt="image-20250304165309298"><figcaption aria-hidden="true">image-20250304165309298</figcaption></figure><p>运行下载程序(这里比较懒直接搬用原博客的图片)：</p><figure><img src="82bcd2897c2b31e451ebe77fd48de32b.png" alt="img"><figcaption aria-hidden="true">img</figcaption></figure><p>上图的1选项要求必须安装C/C++的编译环境，默认是 visualstudio安装器，而此次使用mingw64，因此需要手动修改为<strong>2</strong>，然后输入 <strong>y</strong>，如下图：</p><figure><img src="054e5351e141ca73a10d1c9b23fbbe56.png" alt="img"><figcaption aria-hidden="true">img</figcaption></figure><p>继续输入 <strong>2</strong></p><figure><img src="8ece7f6511005a375ef0709e41d6bb3e.png" alt="img"><figcaption aria-hidden="true">img</figcaption></figure><p>输入 <strong>x86_64-pc-windows-gnu</strong> 表示安装64位的gnu版本</p><figure><img src="27909c21a322d238e8f5674274c61dc8.png" alt="img"><figcaption aria-hidden="true">img</figcaption></figure><p>接下来都是<strong>回车</strong>，使用默认配置</p><figure><img src="3424d624e2c7fc367e3e6d492b9454df.png" alt="img"><figcaption aria-hidden="true">img</figcaption></figure><p>上面配置完毕后，到最后一步还是回车，然后开始安装</p><figure><img src="47d165aa490371b69a80570db9065d68.png" alt="img"><figcaption aria-hidden="true">img</figcaption></figure><p>检查是否安装成功</p><figure><img src="c6ce3b3f8844a7ae1e608091f8f94088.png" alt="img"><figcaption aria-hidden="true">img</figcaption></figure><h3 id="安装latex-ocr">安装latex-OCR</h3><p>在控制台输入：</p><figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cmake">pip <span class="hljs-keyword">install</span> <span class="hljs-string">&quot;pix2tex[gui]&quot;</span><br></code></pre></td></tr></table></figure><p>权重初始化，控制台输入<code>pix2tex</code>，运行完退出。</p><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs">pix2tex<br></code></pre></td></tr></table></figure><p>输入<code>latexocr</code>，即可使用。(注意，numpy版本问题，numpy应选择2.0本一下，否则会出现兼容性问题，)</p><figure><img src="image-20250304171310864.png" alt="image-20250304171310864"><figcaption aria-hidden="true">image-20250304171310864</figcaption></figure><blockquote><p><strong>参考链接：</strong></p><p>rust安装：</p><p>https://blog.csdn.net/xinyingzai/article/details/135459640</p><p>latex安装：</p><p>https://blog.csdn.net/tqlisno1/article/details/108908775</p><p>https://zhuanlan.zhihu.com/p/15911172938</p><p>https://blog.csdn.net/weixin_45423965/article/details/143716379</p></blockquote>]]></content>
+    
+    
+    <categories>
+      
+      <category>软件安装</category>
+      
+    </categories>
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>FLIP:Fine-grained Alignment between ID-based Models and Pretrained Language Models for CTR Prediction论文精读</title>
     <link href="/2025/03/01/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BBFLIP/"/>
     <url>/2025/03/01/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BBFLIP/</url>
@@ -140,7 +159,7 @@
     
     <categories>
       
-      <category>博客搭建</category>
+      <category>软件安装</category>
       
     </categories>
     
